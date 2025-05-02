@@ -1,12 +1,76 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState } from 'react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import Scanner from '../components/Scanner';
+import PlateHistory from '../components/PlateHistory';
+import Dashboard from '../components/Dashboard';
+import { PlateRecord, ScanStats } from '../types';
+import { toast } from 'sonner';
 
 const Index = () => {
+  // State for scan history
+  const [scanRecords, setScanRecords] = useState<PlateRecord[]>([]);
+  
+  // Stats for the dashboard
+  const [stats, setStats] = useState<ScanStats>({
+    totalScans: 0,
+    uniquePlates: 0,
+    todayScans: 0,
+    successRate: 80
+  });
+
+  // Handle new scan results
+  const handleNewScan = (result: PlateRecord) => {
+    // Update scan records
+    setScanRecords(prev => [result, ...prev]);
+    
+    // Update stats
+    setStats(prev => {
+      // Calculate unique plates
+      const allPlates = [...scanRecords, result].map(record => record.plateNumber);
+      const uniquePlates = new Set(allPlates).size;
+      
+      // Calculate today's scans
+      const today = new Date();
+      const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const todayScans = [...scanRecords, result].filter(
+        record => record.timestamp >= todayStart
+      ).length;
+      
+      return {
+        totalScans: prev.totalScans + 1,
+        uniquePlates,
+        todayScans,
+        successRate: Math.round((prev.successRate * prev.totalScans + (result.confidence * 100)) / (prev.totalScans + 1))
+      };
+    });
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      <Header />
+      
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">License Plate Scanner</h1>
+          <p className="text-gray-600">Scan and recognize vehicle license plates through camera feeds</p>
+        </div>
+        
+        <section className="mb-8">
+          <Dashboard stats={stats} />
+        </section>
+        
+        <section>
+          <Scanner onNewScan={handleNewScan} />
+        </section>
+        
+        <section>
+          <PlateHistory records={scanRecords} />
+        </section>
+      </main>
+      
+      <Footer />
     </div>
   );
 };
