@@ -6,10 +6,10 @@ const Footer: React.FC = () => {
     <footer className="bg-scanner-dark text-white p-4 mt-8">
       <div className="container mx-auto text-center">
         <p className="text-sm text-gray-300">
-          &copy; {new Date().getFullYear()} PlateScanner Pro. All rights reserved.
+          &copy; {new Date().getFullYear()} Sistema Inteligente de Acceso Vehicular. Todos los derechos reservados.
         </p>
         <p className="text-xs text-gray-400 mt-1">
-          License plate scanning technology for security and parking management.
+          Tecnología de escaneo de placas para gestión de acceso y seguridad.
         </p>
       </div>
     </footer>

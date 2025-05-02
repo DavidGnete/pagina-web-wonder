@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Scanner from '../components/Scanner';
-import PlateHistory from '../components/PlateHistory';
 import Dashboard from '../components/Dashboard';
 import { PlateRecord, ScanStats } from '../types';
 import { toast } from 'sonner';
@@ -45,6 +44,9 @@ const Index = () => {
         successRate: Math.round((prev.successRate * prev.totalScans + (result.confidence * 100)) / (prev.totalScans + 1))
       };
     });
+    
+    // Mostrar notificación toast
+    toast.success(`Placa registrada: ${result.plateNumber}`);
   };
 
   return (
@@ -53,8 +55,8 @@ const Index = () => {
       
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">License Plate Scanner</h1>
-          <p className="text-gray-600">Scan and recognize vehicle license plates through camera feeds</p>
+          <h1 className="text-3xl font-bold mb-2">Captura de Placas</h1>
+          <p className="text-gray-600">Escanee y reconozca placas de vehículos a través de cámaras</p>
         </div>
         
         <section className="mb-8">
@@ -63,10 +65,6 @@ const Index = () => {
         
         <section>
           <Scanner onNewScan={handleNewScan} />
-        </section>
-        
-        <section>
-          <PlateHistory records={scanRecords} />
         </section>
       </main>
       
